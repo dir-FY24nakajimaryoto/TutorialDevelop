@@ -1,6 +1,7 @@
 package com.techacademy.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.techacademy.entity.User;
 import com.techacademy.repository.UserRepository;
 
+/**
+ * DB操作クラス
+ */
 @Service
 public class UserService {
 
     @Autowired // DIコンテナを経由してインスタンスを取得するアノテーション
     private UserRepository userRepository;
+    
     
     /** 全件を検索して返す */
     public List<User> getUserList() {
@@ -21,12 +26,12 @@ public class UserService {
         return userRepository.findAll();
     }
     
-    // ----- 追加:ここから -----
+    
     /** Userを1件検索して返す */
     public User getUser(Integer id) {
         return userRepository.findById(id).get();
     }
-    // ----- 追加:ここまで -----
+    
     
     /** Userの登録を行う */
     @Transactional // データベース更新用のメソッド
@@ -35,4 +40,11 @@ public class UserService {
     }
     
     
+    /** Userの削除を行う(対象idすべて) */
+    @Transactional
+    public void deleteUser(Set<Integer> idck) {
+        for(Integer id : idck) {
+            userRepository.deleteById(id);
+        }
+    }
 }
