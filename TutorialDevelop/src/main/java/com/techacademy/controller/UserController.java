@@ -5,6 +5,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,9 +56,16 @@ public class UserController {
 
     /** User登録処理 */
     @PostMapping("/register")
-    public String postRegister(User user) {
+    public String postRegister(@Validated User user, BindingResult res, Model model) {
         // POST側では引数にエンティティを指定することで、
         // HTMLのForm項目値がuserの属性としてセットされた状態で受け取れる
+        // @Validated:エンティティに基づいた入力チェック
+        // - チェックの結果はBindingResult resに格納
+        
+        if (res.hasErrors()) {
+            // エラーあり
+            return getRegister(user);
+        }
         
         // User登録
         service.saveUser(user);
